@@ -51,8 +51,9 @@ public class Parser {
         private METAR metar;
         private int airTemperature;
         private int dewpointTemperature;
+        private String weather;
         private boolean bAir, bDewpoint;
-        private boolean bAssignedAir, bAssignedDewpoint;
+        private boolean bAssignedWeather;
 
         public METAR getData() {
             return metar;
@@ -70,6 +71,9 @@ public class Parser {
                 bAir = true;
             } else if (qName.equals("iwxxm:dewpointTemperature")) {
                 bDewpoint = true;
+            } else if (qName.equals("iwxxm:presentWeather")) {
+                weather = attributes.getValue("xlink:title");
+                bAssignedWeather = true;
             }
         }
 
@@ -79,11 +83,9 @@ public class Parser {
             if (bAir) {
                 airTemperature = Integer.parseInt(new String(ch, start, length));
                 bAir = false;
-                bAssignedDewpoint = true;
             } else if (bDewpoint) {
                 dewpointTemperature = Integer.parseInt(new String(ch, start, length));
                 bDewpoint = false;
-                bAssignedDewpoint = true;
             }
         }
 
@@ -91,9 +93,12 @@ public class Parser {
         public void endElement(String uri, String localName,
                                String qName) throws SAXException {
             if (qName.equals("iwxxm:METAR")) {
-                metar = new METAR(airTemperature,dewpointTemperature);
-                bAssignedDewpoint = false;
-                bAssignedAir = false;
+                if(bAssignedWeather){
+                    metar = new METAR(airTemperature,dewpointTemperature,weather);
+                    bAssignedWeather = false;
+                }else {
+                    metar = new METAR(airTemperature,dewpointTemperature);
+                }
             }
         }
     }

@@ -20,11 +20,7 @@ public class Model {
             for(String airport : countries.get(input)){
                 METAR metar = getMetar(airport);
                 if(metar != null){
-                    System.out.print("Would you accept information for " + airport + "? (Y/N)\n> ");
-                    Scanner scanner = new Scanner(System.in);
-                    String userMessage = scanner.nextLine().toLowerCase().substring(0,1);
-                    if(userMessage.equals("y")){
-                        interpretWeather(metar);
+                    if (pollUserOnCorrection(airport, metar)){
                         return;
                     }
                 }
@@ -41,11 +37,7 @@ public class Model {
             if(airport.contains(input)){
                 METAR metar = getMetar(airport);
                 if(metar != null){
-                    System.out.print("Did you mean " + airport + "? (Y/N)\n> ");
-                    Scanner scanner = new Scanner(System.in);
-                    String userMessage = scanner.nextLine().toLowerCase().substring(0,1);
-                    if(userMessage.equals("y")){
-                        interpretWeather(metar);
+                    if (pollUserOnCorrection(airport, metar)){
                         return;
                     }
                 }
@@ -54,7 +46,19 @@ public class Model {
 
         //Try a spelling correction
         String correction = spellingCorrection(input);
+        System.out.println("We think you meant " + correction + ".");
         getAirportWeather(correction);
+    }
+
+    private boolean pollUserOnCorrection(String airport, METAR metar) {
+        System.out.print("Did you mean " + airport + "? (Y/N)\n> ");
+        Scanner scanner = new Scanner(System.in);
+        String userMessage = scanner.nextLine().toLowerCase().substring(0,1);
+        if(userMessage.equals("y")){
+            interpretWeather(metar);
+            return true;
+        }
+        return false;
     }
 
     private String spellingCorrection(String input) {
@@ -88,7 +92,7 @@ public class Model {
         if(metar != null){
             interpretWeather(metar);
         }else {
-            System.out.println("Sorry, couldn't find any data.");
+            System.out.println("Sorry, couldn't find any data for that Airport.");
         }
     }
 
@@ -115,6 +119,11 @@ public class Model {
                 System.out.println("Woah! Those temperatures are Sub-Zero! Pack warm!!");
             }else{
                 System.out.println("The temperature is quite mild. Wear you're regular clothes");
+            }
+            String weather = metar.getWeather();
+            if(weather != null){
+                System.out.println("There is a " + weather.toLowerCase() + ".");
+                System.out.println("You should probably pack an umbrella!");
             }
         } else {
             System.out.println("We didn't have any data for that airport. Sorry!");

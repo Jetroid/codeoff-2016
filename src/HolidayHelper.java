@@ -12,8 +12,13 @@ public class HolidayHelper {
             System.out.print("> ");
             Scanner userInputScanner = new Scanner(System.in);
             String readInput = userInputScanner.nextLine().replaceAll("[^a-zA-Z ]", "");
-            System.out.println("Processing...");
-            model.getWeather(readInput);
+            if(readInput.equals("exit")){
+                System.out.println("Goodbye. :(");
+                wantToExit = true;
+            }else{
+                System.out.println("Processing...");
+                model.getWeather(readInput);
+            }
         }
     }
 }

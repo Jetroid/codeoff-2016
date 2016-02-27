@@ -1,6 +1,11 @@
 public class METAR {
     private int airTemperature;
     private int dewpointTemperature;
+    private String weather = null;
+
+    public METAR(int airTemperature, int dewpointTemperature, String weather){
+        this.weather = weather;
+    }
 
     public METAR(int airTemperature, int dewpointTemperature) {
         this.airTemperature = airTemperature;
@@ -13,5 +18,9 @@ public class METAR {
 
     public int getAirTemperature() {
         return airTemperature;
+    }
+
+    public String getWeather() {
+        return weather;
     }
 }
